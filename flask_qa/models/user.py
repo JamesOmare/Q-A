@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 from ..utils import db
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key = True)

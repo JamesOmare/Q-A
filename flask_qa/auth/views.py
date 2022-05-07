@@ -1,13 +1,28 @@
-from crypt import methods
+import imp
 from flask import Blueprint, redirect, render_template, url_for, request
+from werkzeug.security import check_password_hash
+from flask_login import login_user
 from ..models.user import User
 from ..utils import db
 
 auth = Blueprint('auth', __name__)
 
 
-@auth.route('/login')
+@auth.route('/login', methods = ['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        name = request.form['name']
+        password = request.form['password']
+
+        user = User.query.filter_by(name = name).first()
+        error_message = ''
+
+        if not user or not check_password_hash(user.password, password):
+            error_message = 'Could not login. Please checkand try again. '
+
+        if not error_message:
+            login_user(user)
+            return redirect(url_for('q_a.index'))
     return render_template('login.html')
 
 
@@ -20,7 +35,7 @@ def register():
         user = User(
             name = name, 
             unhashed_password = unhashed_password, 
-            admin = True, 
+            admin = False, 
             expert = False
         )
 
@@ -30,3 +45,7 @@ def register():
         return redirect(url_for('auth.login'))
 
     return render_template('register.html')
+
+@auth.route('/logout')
+def logout():
+    pass

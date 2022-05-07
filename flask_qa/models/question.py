@@ -1,4 +1,3 @@
-
 from ..utils import db
 
 class Question(db.Model):
