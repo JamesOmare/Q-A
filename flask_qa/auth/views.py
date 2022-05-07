@@ -1,7 +1,7 @@
 import imp
 from flask import Blueprint, redirect, render_template, url_for, request
 from werkzeug.security import check_password_hash
-from flask_login import login_user
+from flask_login import login_user, logout_user
 from ..models.user import User
 from ..utils import db
 
@@ -48,4 +48,6 @@ def register():
 
 @auth.route('/logout')
 def logout():
-    pass
+    logout_user()
+
+    return redirect(url_for('auth.login'))
